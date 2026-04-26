@@ -1,1 +1,265 @@
 # queue-visualisasi
+<!--
+Project: Queue Cases Visualization (5 Cases)
+Output: HTML + CSS + JS (ready for GitHub Pages)
+Save as: index.html
+-->
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Visualisasi 5 Kasus Queue</title>
+
+<style>
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial, sans-serif;
+}
+
+body{
+background:#0f172a;
+color:white;
+padding:30px;
+}
+
+h1{
+text-align:center;
+margin-bottom:30px;
+}
+
+.container{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
+gap:20px;
+}
+
+.card{
+background:#1e293b;
+padding:20px;
+border-radius:15px;
+box-shadow:0 0 15px rgba(0,0,0,0.4);
+}
+
+.card h2{
+margin-bottom:15px;
+font-size:20px;
+color:#38bdf8;
+}
+
+.queue{
+display:flex;
+gap:10px;
+flex-wrap:wrap;
+margin-top:15px;
+min-height:50px;
+}
+
+.box{
+padding:12px 15px;
+background:#22c55e;
+border-radius:10px;
+animation:pop .4s ease;
+}
+
+@keyframes pop{
+from{transform:scale(0);}
+to{transform:scale(1);}
+}
+
+button{
+margin-top:15px;
+padding:10px 14px;
+border:none;
+border-radius:8px;
+cursor:pointer;
+background:#38bdf8;
+color:white;
+font-weight:bold;
+}
+
+.info{
+margin-top:10px;
+font-size:14px;
+color:#cbd5e1;
+}
+</style>
+</head>
+
+<body>
+
+<h1>🎯 Visualisasi 5 Kasus Queue</h1>
+
+<div class="container">
+
+<!-- Kasus 1 -->
+<div class="card">
+<h2>1. Printer Queue</h2>
+<div class="queue" id="printer"></div>
+<button onclick="printerRun()">Cetak Dokumen</button>
+<div class="info" id="printerInfo"></div>
+</div>
+
+<!-- Kasus 2 -->
+<div class="card">
+<h2>2. Hot Potato</h2>
+<div class="queue" id="potato"></div>
+<button onclick="hotPotato()">Mulai Game</button>
+<div class="info" id="potatoInfo"></div>
+</div>
+
+<!-- Kasus 3 -->
+<div class="card">
+<h2>3. Rumah Sakit Priority Queue</h2>
+<div class="queue" id="hospital"></div>
+<button onclick="hospitalRun()">Layani Pasien</button>
+<div class="info" id="hospitalInfo"></div>
+</div>
+
+<!-- Kasus 4 -->
+<div class="card">
+<h2>4. BFS Traversal</h2>
+<div class="queue" id="bfs"></div>
+<button onclick="runBFS()">Mulai BFS</button>
+<div class="info" id="bfsInfo"></div>
+</div>
+
+<!-- Kasus 5 -->
+<div class="card">
+<h2>5. Loket Bandara</h2>
+<div class="queue" id="airport"></div>
+<button onclick="airportRun()">Simulasi</button>
+<div class="info" id="airportInfo"></div>
+</div>
+
+</div>
+
+<script>
+// ---------- CASE 1 PRINTER ----------
+let printerDocs=["laporan.pdf","tugas.docx","foto.jpg"];
+function renderPrinter(){
+let el=document.getElementById("printer");
+el.innerHTML="";
+printerDocs.forEach(x=>{
+el.innerHTML+=`<div class="box">${x}</div>`;
+});
+}
+renderPrinter();
+
+function printerRun(){
+if(printerDocs.length>0){
+let doc=printerDocs.shift();
+document.getElementById("printerInfo").innerText="Mencetak: "+doc;
+renderPrinter();
+}else{
+document.getElementById("printerInfo").innerText="Semua selesai dicetak.";
+}
+}
+
+// ---------- CASE 2 HOT POTATO ----------
+let players=["Ayu","Budi","Citra","Doni","Eka"];
+function renderPotato(){
+let el=document.getElementById("potato");
+el.innerHTML="";
+players.forEach(x=>{
+el.innerHTML+=`<div class="box">${x}</div>`;
+});
+}
+renderPotato();
+
+function hotPotato(){
+if(players.length>1){
+players.push(players.shift());
+let out=players.shift();
+document.getElementById("potatoInfo").innerText=out+" tereliminasi!";
+renderPotato();
+}else{
+document.getElementById("potatoInfo").innerText="Pemenang: "+players[0];
+}
+}
+
+// ---------- CASE 3 HOSPITAL ----------
+let patients=[
+{name:"Budi",p:3},
+{name:"Ani",p:0},
+{name:"Citra",p:2},
+{name:"Dedi",p:0},
+{name:"Eka",p:1}
+];
+
+function renderHospital(){
+patients.sort((a,b)=>a.p-b.p);
+let el=document.getElementById("hospital");
+el.innerHTML="";
+patients.forEach(x=>{
+el.innerHTML+=`<div class="box">${x.name} (${x.p})</div>`;
+});
+}
+renderHospital();
+
+function hospitalRun(){
+if(patients.length>0){
+patients.sort((a,b)=>a.p-b.p);
+let p=patients.shift();
+document.getElementById("hospitalInfo").innerText=
+p.name+" dilayani.";
+renderHospital();
+}else{
+document.getElementById("hospitalInfo").innerText="Tidak ada pasien.";
+}
+}
+
+// ---------- CASE 4 BFS ----------
+let graph={
+A:["B","C"],
+B:["D","E"],
+C:["F"],
+D:[],
+E:[],
+F:[]
+};
+
+function runBFS(){
+let q=["A"];
+let visited=[];
+while(q.length){
+let node=q.shift();
+if(!visited.includes(node)){
+visited.push(node);
+q.push(...graph[node]);
+}
+}
+document.getElementById("bfs").innerHTML=
+visited.map(x=>`<div class="box">${x}</div>`).join("");
+document.getElementById("bfsInfo").innerText=
+"Urutan BFS: "+visited.join(" → ");
+}
+
+// ---------- CASE 5 AIRPORT ----------
+let airportQueue=["Penumpang1","Penumpang2","Penumpang3"];
+function renderAirport(){
+let el=document.getElementById("airport");
+el.innerHTML="";
+airportQueue.forEach(x=>{
+el.innerHTML+=`<div class="box">${x}</div>`;
+});
+}
+renderAirport();
+
+function airportRun(){
+if(airportQueue.length>0){
+let p=airportQueue.shift();
+document.getElementById("airportInfo").innerText=
+p+" dilayani loket.";
+renderAirport();
+}else{
+document.getElementById("airportInfo").innerText="Tidak ada antrian.";
+}
+}
+</script>
+
+</body>
+</html>
